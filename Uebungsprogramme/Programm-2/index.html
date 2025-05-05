@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Converter</title>
+    <meta name="author" content="Tim Marlétaz" />
+    <link rel="stylesheet" href="styles.css" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7"
+      crossorigin="anonymous"
+    />
+  </head>
+  <body class="container">
+    <div class="w-100 h-100 p-3 d-flex justify-content-center align-items-center flex-column">
+      <h1 class="h1 fw-bolder">
+        Convert <span class="text-primary">Km</span> into
+        <span class="text-success">Miles</span>
+      </h1>
+      <div class="d-flex w-100 justify-content-center mt-5">
+          <p class="m-0 pe-2 align-items-center d-flex align-items-center">From</p>
+          <select id="selectFrom" class="form-select" onchange="change()">
+            <option>Kilometers</option>
+            <option>Miles</option>
+          </select>
+          <p class="m-0 ps-5 pe-2 d-flex align-items-center">To</p>
+          <select id="selectTo" class="form-select" disabled>
+            <option>Kilometers</option>
+            <option>Miles</option>
+          </select>
+      </div>
+      <div class="d-flex row column-gap-3 px-3 mt-5">
+        <input class="form-control col" id="inputField" onchange="convert()" type="number">
+        <input class="form-control col" disabled id="outputField">
+    </div>
+    </div>
+  </body>
+  <script src="main.js"></script>
+  <script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq"
+    crossorigin="anonymous"
+  ></script>
+</html>

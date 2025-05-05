@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Counter</title>
+    <meta name="author" content="Tim Marlétaz">
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+</head>
+<body>
+
+    <div class="container">
+            <h1 class="text-5xl">Counter</h1>
+            <div class="counter-wrapper">
+                <button id="counter-button" onclick="increaseCounter()">Click me!</button>
+                <div class="counter-display">
+                    <p>Count: </p><p id="counter">0</p>
+                </div>
+                <button class="reset-button" onclick="resetCounter()">Reset</button>
+    </div>
+    
+</body>
+<script src="main.js"></script>
+</html>

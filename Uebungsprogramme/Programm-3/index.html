@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Todo</title>
+    <meta name="author" content="Tim Marlétaz" />
+    <link rel="stylesheet" href="styles.css" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7"
+      crossorigin="anonymous"
+    />
+  </head>
+  <body class="container w-100 h-100 d-flex flex-column align-items-center position-relative">
+    <h1 class="fw-bolder py-3">Todo-List</h1>
+    <div style="max-width: 500px" class="w-100 d-flex justify-content-between">
+      <input
+        class="form-control me-3"
+        placeholder="z.B. Einkaufen gehen"
+        id="todoField"
+        required
+      />
+      <button class="btn btn-primary px-4 py-2" onclick="addTodo()">Add</button>
+    </div>
+    <div
+      class="w-100 d-flex flex-column align-items-center row-gap-3 mt-5 overflow-auto" style="flex: 1;"
+      id="todoList"
+    >
+      <template id="listItemTemplate">
+        <div class="card w-100 px-4 py-2" style="max-width: 400px" id="cardTarget">
+          <div class="d-flex justify-content-between">
+            <p class="w-75 m-0 d-flex align-items-center" id="itemContent">Platzhalter</p>
+            <div class="img-wrapper p-1 rounded-circle">
+              <img
+                src="img/delete_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg"
+                class="w-auto"
+                style="
+                  max-height: 1.5rem;
+                  aspect-ratio: 1/1;
+                  object-fit: contain;
+                  cursor: pointer;
+                "
+              />
+            </div>
+          </div>
+        </div>
+      </template>
+    </div>
+
+    <div id="alert" class="position-absolute w-100 d-flex justify-content-center" style="bottom: 25px">
+        <div class="bg-danger d-flex px-3 align-items-center py-1 rounded-2 flex-nowrap column-gap-5 mw-100">
+                <img src="img/error_24dp_FFFFFF_FILL0_wght400_GRAD0_opsz24.svg" class="pe-4">
+                <p id="errorText" class="text-white m-0 pe-4">Beispiel Error</p>
+                <img src="img/close_24dp_FFFFFF_FILL0_wght400_GRAD0_opsz24.svg" style="cursor: pointer;" onclick="closeError()">
+        </div>
+    </div>
+
+  </body>
+  <script src="main.js"></script>
+  <script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq"
+    crossorigin="anonymous"
+  ></script>
+</html>
