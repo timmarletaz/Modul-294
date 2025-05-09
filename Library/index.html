@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <title>Library | Medien</title>
+    <meta name="author" content="Tim Marlétaz">
+    <meta name="keywords" content="M294, Library, M294 Library">
+    <link rel="stylesheet" href="../Library/global.css">
+    <link rel="stylesheet" href="../Library/custom.css">
+    <link rel="stylesheet" href="../Library/Medien/styles.css">
+    <script src="https://kit.fontawesome.com/f3f08c04e9.js" crossorigin="anonymous"></script>
+    <meta charset="UTF-8">
+</head>
+<body>
+<nav class="bg-primary px-3 d-flex justify-content-between">
+    <img src="img/Logo-M294.png" width="75" height="75">
+    <ul>
+        <li><a class="active" href="../Library/index.html">Medien</a></li>
+        <li><a href="../Library/Ausleihen/index.html">Ausleihen</a></li>
+        <li><a href="../Library/Kunden/index.html">Kunden</a></li>
+        <li><a href="../Library/Adressen/index.html">Adressen</a></li>
+    </ul>
+</nav>
+<div class="container-fluid overflow-y-auto overflow-x-hidden flex-1">
+    <main class="container d-flex flex-column align-items-center py-4 pb-5 px-2 h-auto" style="min-height: 100%">
+        <div class="d-flex align-items-center w-100 justify-content-between">
+            <h1>Medien</h1>
+            <button class="btn btn-secondary" onclick="addNewMedium()">Medium hinzufügen</button>
+        </div>
+        <div class="w-100 d-flex justify-content-center mt-4 mb-5">
+            <div class="bg-grey rounded-pill search-bar d-flex">
+                <input class="w-100 border-0 bg-transparent rounded-start-pill search px-3 py-1" id="searchInput" placeholder="Suchen" onchange="searchForMedia()">
+                <button class="btn search-button px-4 rounded-end-pill" onclick="searchForMedia()"><i
+                        class="fa-solid fa-magnifying-glass"></i></button>
+            </div>
+        </div>
+
+        <div class="grid row w-100 g-3" id="cardGrid">
+        </div>
+
+
+    </main>
+
+
+    <div role="alert" class="alert-wrapper d-flex justify-content-center">
+        <template id="alert">
+            <div class="rounded-3 d-flex align-items-center shadow gap-5 justify-content-between bg-info px-3"
+                 id="alertContentWrapper">
+                <i class="fa-solid fa-triangle-exclamation status-icon"></i>
+                <p class="m-0 flex-wrap" id="message">Alert Message</p>
+                <button class="close-button"><i class="fa fa-close"></i></button>
+            </div>
+        </template>
+    </div>
+
+    <template id="skeletonLoaderCard">
+        <div class="col-12 col-md-6 col-lg-4">
+            <div class="card skeleton-card h-100 rounded-3">
+                <div class="card-body p-3 py-2 position-relative">
+                    <div class="w-100 d-flex bg-skeleton justify-content-between flex-wrap align-items-center">
+                        <p class="card-genre text-grey m-0 text-white"></p>
+                        <div class="d-flex align-items-center">
+                            <button class="edit-button text-transparent"><i
+                                    class="fa-solid fa-pen-to-square p-1 pe-2"
+                                    style="font-size: 0.9rem"></i></button>
+                        </div>
+                    </div>
+                    <h5 class="card-title m-0 mt-2 text-transparent bg-skeleton w-25">Titel <span class="fsk">fsk</span>
+                    </h5>
+                    <h6 class="card-title mb-2 fw-normal bg-skeleton w-25 mt-2">Autor</h6>
+
+                    <div class="w-100 d-flex align-items-center justify-content-between">
+                        <p class="m-0 text-break w-50 bg-skeleton" style="height: 0.9rem">isbn</p>
+                        <button class="btn w-auto h-100 w-25" disabled
+                                style="background-color: #d5d5d5; color: #d5d5d5">Ausleihen
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <template id="mediaCardTemplate">
+        <div class="col-12 col-md-6 col-lg-4">
+            <div class="card h-100 rounded-3">
+                <div class="card-body p-3 py-2 position-relative">
+                    <div class="w-100 d-flex justify-content-between flex-wrap align-items-center">
+                        <p class="card-genre text-grey m-0" id="genre"></p>
+                        <div class="d-flex align-items-center">
+                            <button class="edit-button"><i class="fa-solid fa-pen-to-square p-1 pe-2"
+                                                           style="font-size: 0.9rem"></i></button>
+                            <div class="availability" id="availability"></div>
+                        </div>
+                    </div>
+                    <h5 class="card-title m-0 mt-2" id="titel">Titel <span class="fsk" id="fsk"></span></h5>
+                    <h6 class="card-title mb-2 fw-normal" id="autor">Autor</h6>
+
+                    <div class="w-100 d-flex align-items-center justify-content-between align-self-end">
+                        <p class="m-0 text-break w-50" id="isbn"></p>
+                        <button class="btn btn-secondary text-white w-auto h-auto"
+                                style="max-height: fit-content">Ausleihen
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </template>
+
+</div>
+</body>
+<script src="../Library/Medien/main.js"></script>
+</html>

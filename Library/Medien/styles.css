@@ -1,0 +1,25 @@
+.text-grey {
+    color: #9a9898;
+}
+
+.card-genre {
+    font-size: 0.8rem;
+}
+
+.availability {
+    height: 0.9rem;
+    aspect-ratio: 1/1;
+    border-radius: 100%;
+    background-color: var(--bs-success);
+}
+
+.edit-button {
+    background-color: transparent;
+    border: none;
+    padding: 0;
+}
+
+.fsk {
+    font-size: 1rem;
+    font-weight: normal;
+}
