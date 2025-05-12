@@ -7,11 +7,12 @@
     <link rel="stylesheet" href="../custom.css">
     <link rel="stylesheet" href="./../global.css">
     <link rel="stylesheet" href="../Kunden/styles.css">
-    <script src="../Kunden/main.js"></script>
+    <script src="https://kit.fontawesome.com/f3f08c04e9.js" crossorigin="anonymous"></script>
+    <meta charset="UTF-8">
 </head>
 <body>
 <nav class="bg-primary px-3 d-flex justify-content-between">
-    <img src="../img/Logo-M294.png" width="75" height="75">
+    <img src="../img/Logo-M294.png" width="75" height="75" alt="logo">
     <ul>
         <li><a href="../index.html">Medien</a></li>
         <li><a href="../Ausleihen/index.html">Ausleihen</a></li>
@@ -19,5 +20,45 @@
         <li><a href="../Adressen/index.html">Adressen</a></li>
     </ul>
 </nav>
+<div class="container-fluid overflow-y-auto overflow-x-hidden flex-1 position-relative">
+    <main class="container d-flex flex-column align-items-center py-4 pb-5 px-2 h-auto" style="min-height: 100%">
+        <div class="d-flex align-items-center w-100 justify-content-between">
+            <h1>Kunden</h1>
+            <button class="btn btn-secondary" onclick="addNewCustomer()">Kunde hinzufügen</button>
+        </div>
+        <div class="w-100 d-flex justify-content-center mt-4 mb-5">
+            <div class="bg-grey rounded-pill search-bar d-flex">
+                <input class="w-100 border-0 bg-transparent rounded-start-pill search px-3 py-1" id="searchInput"
+                       placeholder="Suchen" onchange="searchForMedia()">
+                <button class="btn search-button px-4 rounded-end-pill" onclick="searchForMedia()"><i
+                        class="fa-solid fa-magnifying-glass"></i></button>
+            </div>
+        </div>
+    </main>
+</div>
+<template id="newCustomerTemplate">
+<div class="new-object-popup">
+    <div class="new-object-wrapper p-4 d-flex flex-column">
+        <h3 class="title text-center mb-4">Neuer Kunde</h3>
+        <form class="d-flex flex-column gap-3 flex-1 px-4 py-2" id="new-object-form">
+            <input class="form-control" placeholder="Vorname *" name="Vorname" id="newObjectFirstname" required>
+            <input class="form-control" placeholder="Nachname *" name="Nachname" id="newObjectLastname" required>
+            <input class="form-control" placeholder="Geburtsdatum *" min="1900-01-01" type="date" name="Geburtsdatum" id="newObjectBirthdate" required>
+            <input class="form-control" placeholder="Email *" name="Email" type="email" id="newObjectEmail" required>
+
+            <h3 class="title text-center mt-3">Adresse</h3>
+            <input class="form-control" placeholder="Strasse + Hausnummer *" name="Strasse" id="newObjectStreet" required>
+            <input class="form-control" placeholder="Ortschaft *" name="" id="newObjectCity" required>
+            <input class="form-control mb-3" placeholder="PLZ *" name="" id="newObjectPlz" required>
+
+            <div class="mt-auto w-100 d-flex justify-content-end gap-2">
+                <button class="btn btn-danger text-white" type="button">Abbrechen</button>
+                <button class="btn btn-secondary" type="submit">Erstellen</button>
+            </div>
+        </form>
+    </div>
+</div>
+</template>
 </body>
+<script src="../Kunden/main.js"></script>
 </html>

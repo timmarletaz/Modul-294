@@ -24,11 +24,15 @@ body {
     overflow: hidden;
 }
 
-h1 {
+h1,h3 {
     font-family: "Special Gothic Expanded One", sans-serif;
     font-weight: 400;
     font-style: normal;
     font-size: 2.5rem !important;
+}
+
+h3 {
+    font-size: 1.75rem !important;
 }
 
 .bg-grey {
@@ -160,6 +164,24 @@ li a:hover{
 
 .text-transparent {
     color: transparent !important;
+}
+
+.new-object-popup {
+    position: absolute;
+    height: 100dvh;
+    width: 100vw;
+    background-color: rgba(0,0,0,0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.new-object-wrapper {
+    border-radius: 15px;
+    overflow-y: auto;
+    width: clamp(300px, 50%, 800px);
+    height: clamp(500px, 60%, 700px);
+    background-color: white;
 }
 
 
