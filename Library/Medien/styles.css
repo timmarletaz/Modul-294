@@ -2,10 +2,6 @@
     color: #9a9898;
 }
 
-.card-genre {
-    font-size: 0.8rem;
-}
-
 .availability {
     height: 0.9rem;
     aspect-ratio: 1/1;
@@ -13,13 +9,26 @@
     background-color: var(--bs-success);
 }
 
-.edit-button {
-    background-color: transparent;
-    border: none;
-    padding: 0;
-}
-
 .fsk {
     font-size: 1rem;
     font-weight: normal;
+}
+
+.customer-card-wrapper {
+    padding-right: 3px;
+}
+
+.customer-card-wrapper::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+}
+
+.customer-card-wrapper::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.customer-card-wrapper::-webkit-scrollbar-thumb {
+    background-color: #aaa;
+    border-radius: 10px;
+    border: 1px solid transparent;
 }

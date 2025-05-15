@@ -24,7 +24,7 @@ body {
     overflow: hidden;
 }
 
-h1,h3 {
+h1,h3, h4 {
     font-family: "Special Gothic Expanded One", sans-serif;
     font-weight: 400;
     font-style: normal;
@@ -33,6 +33,11 @@ h1,h3 {
 
 h3 {
     font-size: 1.75rem !important;
+}
+
+h4 {
+    font-size: 1.3rem !important;
+    letter-spacing: 1px;
 }
 
 .bg-grey {
@@ -120,6 +125,7 @@ li a:hover{
     bottom: 35px;
     transition: 0.2s transform ease-in-out;
     transform: translateY(100px);
+    z-index: 5;
 }
 
 .close-button {
@@ -134,7 +140,14 @@ li a:hover{
     background-color: rgba(213, 213, 213, 0.42);
 }
 
-#alertContentWrapper {
+
+.edit-button {
+    background-color: transparent;
+    border: none;
+    padding: 0;
+}
+
+.alert-content-wrapper {
     width: clamp(200px, 45%, 400px);
     color: black;
     font-weight: 600;
@@ -180,8 +193,16 @@ li a:hover{
     border-radius: 15px;
     overflow-y: auto;
     width: clamp(300px, 50%, 800px);
-    height: clamp(500px, 60%, 700px);
+    height: clamp(550px, 70%, 1000px);
     background-color: white;
+}
+
+.user-selection-card:hover {
+    border: 2px solid var(--bs-primary);
+}
+
+.cursor-pointer {
+    cursor: pointer !important;
 }
 
 

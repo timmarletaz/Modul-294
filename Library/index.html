@@ -44,8 +44,7 @@
 
     <div role="alert" class="alert-wrapper d-flex justify-content-center">
         <template id="alert">
-            <div class="rounded-3 d-flex align-items-center shadow gap-5 justify-content-between bg-info px-3"
-                 id="alertContentWrapper">
+            <div class="rounded-3 d-flex align-items-center shadow gap-5 justify-content-between bg-info px-3 alert-content-wrapper">
                 <i class="fa-solid fa-triangle-exclamation status-icon"></i>
                 <p class="m-0 flex-wrap" id="message">Alert Message</p>
                 <button class="close-button"><i class="fa fa-close"></i></button>
@@ -99,7 +98,7 @@
                     <div class="w-100 d-flex align-items-center justify-content-between align-self-end">
                         <p class="m-0 text-break w-50" id="isbn"></p>
                         <button class="btn btn-secondary text-white w-auto h-auto"
-                                style="max-height: fit-content">Ausleihen
+                                style="max-height: fit-content" id="borrowButton">Ausleihen
                         </button>
                     </div>
 
@@ -126,6 +125,40 @@
                     <button class="btn btn-secondary" type="submit">Erstellen</button>
                 </div>
             </form>
+        </div>
+    </div>
+</template>
+<template id="borrowWindowTemplate">
+    <div class="new-object-popup" id="borrowPopup">
+        <div class="new-object-wrapper p-4 d-flex flex-column">
+            <h3 class="title text-center mb-4">Ausleihen</h3>
+            <div class="card py-2 px-3">
+                <div class="d-flex justify-content-between">
+                    <span style="font-size: 0.9rem" class="text-grey genre"></span>
+                    <span style="font-size: 0.9rem" class="text-grey fsk"></span>
+                </div>
+                <h5 class="card-title m-0 mt-1 title-author"></h5>
+                <div>
+                    <p style="font-size: 0.9rem" class="text-grey mt-2 m-auto isbn"></p>
+                </div>
+            </div>
+            <h4 class="text-center m-0 mt-4 fw-bolder">Ausleihende Person</h4>
+
+            <input class="form-control mt-3" placeholder="Suchen" onchange="searchForCustomer()" id="borrowingCustomerSearch">
+
+            <div class="overflow-y-auto w-100 d-flex flex-column align-items-center row-gap-2 mt-3 customer-card-wrapper">
+                <template id="borrowCustomerCard">
+                    <div class="card py-1 px-2 w-100 user-selection-card cursor-pointer">
+                        <span class="text-grey id" style="font-size: 0.9rem">ID</span>
+                        <h5 class="card-title mt-2 mb-1 name">Vorname, Nachname</h5>
+                        <h6 class="address">Adresse</h6>
+                    </div>
+                </template>
+            </div>
+            <div class="w-100 d-flex justify-content-end mt-4 column-gap-2">
+                <button class="btn btn-danger text-white" type="button">Abbrechen</button>
+                <button class="btn btn-secondary" type="submit">Ausleihen</button>
+            </div>
         </div>
     </div>
 </template>

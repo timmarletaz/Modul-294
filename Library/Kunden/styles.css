@@ -1,0 +1,4 @@
+.icon {
+    transition: 0.2s linear transform;
+    transform: rotate(0deg);
+}
