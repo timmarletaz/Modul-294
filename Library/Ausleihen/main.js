@@ -124,7 +124,7 @@ async function submitBorrowExtension(days, mediaId) {
         if(!response.ok){
             throw new Error();
         }
-        return response;
+        return await response.json();
     } catch (error) {
         openAlert(error.message || "Ausleihe konnte nicht verlängert werden", "danger", 2500);
     }
