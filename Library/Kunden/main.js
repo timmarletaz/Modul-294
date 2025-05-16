@@ -1,6 +1,9 @@
 const cardGrid = document.getElementById("cardGrid");
 let customers = {}
 
+/**
+ * Diese Funktion wird nach dem Laden der Seite ausgeführt. Sie lädt die Kunden und zeigt sie an.
+ */
 document.addEventListener("DOMContentLoaded", async () => {
     showLoadingCards();
     customers = await getCustomers();
@@ -9,6 +12,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 })
 
+/**
+ * Diese Funktion zeigt die Skeleton-Karten an
+ */
 function showLoadingCards() {
     let cardGrid = document.getElementById("cardGrid");
     cardGrid.innerHTML = "";
@@ -19,6 +25,10 @@ function showLoadingCards() {
     }
 }
 
+/**
+ * Diese Funktion rendert alle Kunden aus einem mitgegebenen Array
+ * @param customerArray -> Array mit Kunden, die gerendert werden sollen
+ */
 function displayCustomers(customerArray) {
     if (customerArray) {
         cardGrid.innerHTML = "";
@@ -53,6 +63,10 @@ function displayCustomers(customerArray) {
     }
 }
 
+/**
+ * Diese Funktion beinhaltet das Löschen eines Kunden
+ * @param customer -> Kunde, welcher gelöscht werden soll
+ */
 async function deleteCustomer(customer) {
     if (confirm("Möchten sie den User (" + customer.id + "): " + customer.firstname + " " + customer.lastname + " endgültig löschen?")) {
         try {
@@ -66,6 +80,9 @@ async function deleteCustomer(customer) {
     }
 }
 
+/**
+ * Mit dieser Funktion kann man einen neuen Kunden erfassen
+ */
 async function addNewCustomer() {
     const template = document.getElementById("newCustomerTemplate").content.cloneNode(true);
     template.querySelector("#new-object-form").addEventListener("submit", async (e) => {
@@ -78,7 +95,7 @@ async function addNewCustomer() {
         displayCustomers(customers);
     })
     template.querySelector(".new-object-popup").addEventListener("click", (e) => {
-        if(e.target.classList.contains("new-object-popup")) {
+        if (e.target.classList.contains("new-object-popup")) {
             document.body.removeChild(document.querySelector(".new-object-popup"));
         }
     })
@@ -88,6 +105,11 @@ async function addNewCustomer() {
     document.body.appendChild(template);
 }
 
+/**
+ * Diese Funktion gibt einen neuen Kunden an das Backend, um ihn zu speichern
+ * @param data -> Kunde, welcher gespeichert werden soll
+ * @returns {Promise<any>} -> Objekt des neuen Kunden
+ */
 async function submitNewCustomer(data) {
     try {
         return await (await fetch("http://localhost:8080/api/customers/create", {
@@ -100,9 +122,13 @@ async function submitNewCustomer(data) {
     }
 }
 
+/**
+ * Diese Funktion erlaubt es einem nach einem Kunden (mit ID oder Nachnamen) zu suchen
+ * @returns {Promise<void>} -> Liste der korrespondierenden Kunden
+ */
 async function searchForCustomer() {
     let value = document.querySelector("#searchInput").value;
-
+    value = DOMPurify.sanitize(value);
     if (value.replace(/\s+/g, "") === "") {
         displayCustomers(customers);
         return;
@@ -119,7 +145,7 @@ async function searchForCustomer() {
         }
     } else {
         try {
-            const response = await(await fetch("http://localhost:8080/api/customers/lastname/" + value)).json();
+            const response = await (await fetch("http://localhost:8080/api/customers/lastname/" + value)).json();
             displayCustomers(response);
         } catch (error) {
             this.openAlert(error.message, "warning", "3000");
@@ -127,20 +153,28 @@ async function searchForCustomer() {
     }
 }
 
+/**
+ * Diese Funktion gibt die Daten des Formulars zur Erfassung/Bearbeitung eines Kunden zurück.
+ * @returns {{firstname: *, birthdate: *, address: {zip: *, address: *, city: *}, email: *, lastname: *}} -> Array der Formulardaten
+ */
 function returnFormData() {
     return {
-        firstname: document.querySelector("#newObjectFirstname").value,
-        lastname: document.querySelector("#newObjectLastname").value,
-        birthdate: document.querySelector("#newObjectBirthdate").value,
-        email: document.querySelector("#newObjectEmail").value,
+        firstname: DOMPurify.sanitize(document.querySelector("#newObjectFirstname").value),
+        lastname: DOMPurify.sanitize(document.querySelector("#newObjectLastname").value),
+        birthdate: DOMPurify.sanitize(document.querySelector("#newObjectBirthdate").value),
+        email: DOMPurify.sanitize(document.querySelector("#newObjectEmail").value),
         address: {
-            address: document.querySelector("#newObjectStreet").value,
-            city: document.querySelector("#newObjectCity").value,
-            zip: document.querySelector("#newObjectPlz").value
+            address: DOMPurify.sanitize(document.querySelector("#newObjectStreet").value),
+            city: DOMPurify.sanitize(document.querySelector("#newObjectCity").value),
+            zip: DOMPurify.sanitize(document.querySelector("#newObjectPlz").value)
         }
     };
 }
 
+/**
+ * Mit dieser Funktion lässt sich ein bereits bestehender Kunde bearbeiten
+ * @param customer -> Aktualisiertes Kundenobjekt
+ */
 function editCustomer(customer) {
     const template = document.querySelector("#newCustomerTemplate").content.cloneNode(true);
     template.querySelector("#newObjectFirstname").value = customer.firstname;
@@ -157,7 +191,7 @@ function editCustomer(customer) {
     })
 
     template.querySelector(".new-object-popup").addEventListener("click", (e) => {
-        if(e.target.classList.contains("new-object-popup")) {
+        if (e.target.classList.contains("new-object-popup")) {
             document.body.removeChild(document.querySelector(".new-object-popup"));
         }
     })
@@ -173,11 +207,20 @@ function editCustomer(customer) {
     document.body.appendChild(template);
 }
 
-async function submitCustomerChanges(customer){
+/**
+ * Diese Funktion gibt die Änderungen, welche an einem Kunden vorgenommen wurden, an das Backend weiter
+ * @param customer -> Kunde der aktualisiert wurde
+ * @returns {Promise<any>} -> Neues Kundenobjekt
+ */
+async function submitCustomerChanges(customer) {
     let data = returnFormData();
     data.id = customer.id;
     try {
-        const response = await (await fetch("http://localhost:8080/api/customers/update", {method: "PUT", headers: {"Content-Type": "application/json"}, body: JSON.stringify(data)})).json();
+        const response = await (await fetch("http://localhost:8080/api/customers/update", {
+            method: "PUT",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify(data)
+        })).json();
         openAlert("Erfolgreich geändert", "info", 2500);
         return response;
     } catch (error) {
@@ -185,6 +228,11 @@ async function submitCustomerChanges(customer){
     }
 }
 
+/**
+ * Diese Funktion formatiert ein bestimmtes Datum im Format (DD.MM.YYYY)
+ * @param dateString -> Datum, welches formatiert werden soll
+ * @returns {string} -> Formatiertes Datum
+ */
 function formatDate(dateString) {
     const date = new Date(dateString);
     const year = date.getFullYear();
@@ -193,7 +241,10 @@ function formatDate(dateString) {
     return `${year}-${month}-${day}`; // Format für <input type="date">
 }
 
-
+/**
+ * Diese Funktion gibt eine Liste aller Kunden zurück
+ * @returns {Promise<any>} -> Liste aller Kunden
+ */
 async function getCustomers() {
     try {
         const response = await (await fetch("http://localhost:8080/api/customers/all")).json();
@@ -203,7 +254,12 @@ async function getCustomers() {
     }
 }
 
-
+/**
+ * Mit dieser Funktion lässt sich ein Alert/Banner öffnen, um dem User etwas mitzuteilen
+ * @param message -> Anzuzeigender Text
+ * @param status -> Art der Information (Danger, Warning, Success, Info)
+ * @param duration -> Zeit, wie lange der Alert sichtbar sein sollte
+ */
 function openAlert(message, status, duration) {
     let alertWrapper = document.querySelector(".alert-wrapper");
     document.querySelectorAll(".alert-content-wrapper").forEach(alert => alert.remove());
@@ -232,6 +288,9 @@ function openAlert(message, status, duration) {
     setTimeout(closeAlert, duration);
 }
 
+/**
+ * Mit dieser Funktion wird der Alert wieder geschlossen
+ */
 function closeAlert() {
     const alertWrapper = document.querySelector(".alert-wrapper");
     const alertItem = alertWrapper.querySelector(".alert-content-wrapper");

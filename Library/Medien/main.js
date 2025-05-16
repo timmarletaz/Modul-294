@@ -4,15 +4,22 @@ let customers = [];
 let borrowingCustomer;
 let timeout;
 
+/**
+ * Diese Funktion wird nach dem Laden der Seite ausgeführt. Sie lädt die Medien und Kunden und zeigt sie an.
+ */
 document.addEventListener("DOMContentLoaded", async () => {
     showLoadingCards();
-    media = await fetchMedia();
+    media = await getMedia();
     if (media) {
         displayMedia(media);
     }
     customers = await getCustomers();
 })
 
+/**
+ * Diese Funktion lädt alle Kunden aus dem Backend
+ * @returns {Promise<any>} -> Liste aller Medien
+ */
 async function getCustomers() {
     try {
         return await (await fetch("http://localhost:8080/api/customers/all")).json();
@@ -21,7 +28,11 @@ async function getCustomers() {
     }
 }
 
-async function fetchMedia() {
+/**
+ * Diese Funktion lädt alle Medien aus dem Backend
+ * @returns {Promise<any>} -> Liste der Medien
+ */
+async function getMedia() {
     try {
         return await (await fetch("http://localhost:8080/api/media/all")).json();
     } catch (error) {
@@ -29,29 +40,52 @@ async function fetchMedia() {
     }
 }
 
+/**
+ * Diese Funktion rendert einen bestimmten Array von Medien
+ * @param mediaArray -> Array von zu rendernden Medien
+ */
 function displayMedia(mediaArray) {
     document.getElementById("cardGrid").style.userSelect = "auto";
+    cardGrid.innerHTML = "";
     if (mediaArray) {
-        cardGrid.innerHTML = "";
-        mediaArray.slice().reverse().forEach(media => {
+        mediaArray.slice().reverse().forEach(mediaElement => {
             const template = document.getElementById("mediaCardTemplate").content.cloneNode(true);
-            if (media.genre) template.querySelector("#genre").textContent = media.genre;
+            if (mediaElement.genre) template.querySelector("#genre").textContent = mediaElement.genre;
             const titleElement = template.querySelector("#titel");
-            titleElement.childNodes[0].textContent = media.title;
-            if (media.fsk) template.querySelector(".fsk").textContent = "(FSK " + media.fsk + ")";
-            template.querySelector("#autor").textContent = media.author;
-            if (media.isbn) template.querySelector("#isbn").textContent = media.isbn;
+            titleElement.childNodes[0].textContent = mediaElement.title;
+            if (mediaElement.fsk) template.querySelector(".fsk").textContent = "(FSK " + mediaElement.fsk + ")";
+            template.querySelector("#autor").textContent = mediaElement.author;
+            if (mediaElement.isbn) template.querySelector("#isbn").textContent = mediaElement.isbn;
             template.querySelector(".edit-button").addEventListener("click", () => {
-                editMedium(media)
+                editMedium(mediaElement)
             });
+            template.querySelector(".delete-button").addEventListener("click", async () => {
+                if (confirm("Medium '" + mediaElement.title + "' wirklich löschen?")) {
+                    try {
+                        const response = await fetch("http://localhost:8080/api/media/" + mediaElement.id, {method: "DELETE"});
+                        if(!response.ok) {
+                            throw new Error(response.message);
+                        }
+                        media.splice(media.indexOf(mediaElement), 1);
+                        displayMedia(media);
+                        openAlert("Erfolgreich gelöscht", "success", 2500);
+                    } catch (error) {
+                        openAlert("Konnte nicht gelöscht werden. Überprüfen sie die Ausleihen", "danger", 2500);
+                    }
+                }
+            })
             template.querySelector("#borrowButton").addEventListener("click", () => {
-                openBorrowWindow(media);
+                openBorrowWindow(mediaElement);
             })
             cardGrid.appendChild(template);
         })
     }
 }
 
+/**
+ * Diese Funktion öffnet ein Popup, um ein Medium ausleihen zu können
+ * @param media -> das Medium, welches ausgeliehen wird
+ */
 function openBorrowWindow(media) {
     const template = document.getElementById("borrowWindowTemplate").content.cloneNode(true);
     template.querySelector(".genre").textContent = media.genre || "";
@@ -62,33 +96,55 @@ function openBorrowWindow(media) {
         document.body.removeChild(document.querySelector("#borrowPopup"));
     })
     template.querySelector("button[type='submit']").addEventListener("click", async () => {
-        if(!borrowingCustomer){
+        if (!borrowingCustomer) {
             openAlert("Kein Kunde ausgewählt", "warning", 3000);
-        }else{
-            const response = await submitNewBorrowing(borrowingCustomer.id, media.id);
+        } else {
+            try {
+                const response = await submitNewBorrowing(borrowingCustomer.id, media.id);
+                console.log(response.status);
+                if (response.status !== 200) {
+                    console.log(response);
+                    throw new Error(response.message);
+                }
+                openAlert("Ausleihe getätigt", "success", 2500);
+            } catch (error) {
+                openAlert(error.message || "Medium ist bereits ausgeliehen", "info", 2500);
+            }
             document.body.removeChild(document.querySelector("#borrowPopup"));
-            openAlert("Ausleihe getätigt", "success", 2500);
             borrowingCustomer = null;
         }
     })
     template.querySelector("#borrowPopup").addEventListener("click", (e) => {
-        if(e.target.id === "borrowPopup"){
-        document.body.removeChild(document.querySelector("#borrowPopup"));
+        if (e.target.id === "borrowPopup") {
+            document.body.removeChild(document.querySelector("#borrowPopup"));
         }
     })
     document.body.appendChild(template);
     renderBorrowCustomers(customers.slice(0, 10));
 }
 
+/**
+ * Mit dieser Funktion wird eine neue Ausleihe an das Backend geschickt
+ * @param customerId
+ * @param mediaId
+ * @returns {Promise<Response>}
+ */
 async function submitNewBorrowing(customerId, mediaId) {
     try {
-        const response = await(await fetch("http://localhost:8080/api/borrowing", {method: "POST", headers: {mediaId: mediaId, customerId: customerId}})).json();
+        const response = await fetch("http://localhost:8080/api/borrowing", {
+            method: "POST",
+            headers: {mediaId: mediaId, customerId: customerId}
+        })
         return response;
     } catch (error) {
         openAlert(error.message || "Ausleihe konnte nicht getätigt werden", "danger", 3000);
     }
 }
 
+/**
+ * Diese Funktion wird verwendet, um bestimmte Kunden innerhalb des Ausleihe Fensters anzuzeigen
+ * @param customerArray
+ */
 function renderBorrowCustomers(customerArray) {
     document.querySelectorAll(".customer-card-wrapper .card").forEach(card => document.querySelector(".customer-card-wrapper").removeChild(card));
     customerArray.forEach(customer => {
@@ -112,14 +168,21 @@ function renderBorrowCustomers(customerArray) {
     })
 }
 
+/**
+ * Mit dieser Funktion kann man innerhalb des Ausleihe-Fensters nach bestimmten Benutzern suchen
+ */
 function searchForCustomer() {
-    const value = document.getElementById("borrowingCustomerSearch").value.trim().toLowerCase();
+    let value = document.getElementById("borrowingCustomerSearch").value.trim().toLowerCase();
+    value = DOMPurify.sanitize(value);
     let data = customers.filter(customer => {
         return (customer.firstname.trim().toLowerCase().includes(value) || customer.lastname.trim().toLowerCase().includes(value) || customer.id.toString() === value);
     });
     renderBorrowCustomers(data);
 }
 
+/**
+ * Diese Funktion erlaubt es einem, ein neues Medium anzulegen
+ */
 function addNewMedium() {
     const template = document.querySelector("#newMediumTemplate").content.cloneNode(true);
     template.querySelector("#new-object-form").addEventListener("submit", async (e) => {
@@ -131,7 +194,7 @@ function addNewMedium() {
         displayMedia(media);
     })
     template.querySelector(".new-object-popup").addEventListener("click", (e) => {
-        if(e.target.classList.contains("new-object-popup")) {
+        if (e.target.classList.contains("new-object-popup")) {
             document.body.removeChild(document.querySelector(".new-object-popup"));
         }
     })
@@ -141,9 +204,14 @@ function addNewMedium() {
     document.body.appendChild(template);
 }
 
+/**
+ * Mit dieser Funktion lässt sich ein bereits existierendes Medium bearbeiten
+ * @param mediaElement -> zu bearbeitendes Medium
+ * @returns {Promise<void>} -> Neues Medium
+ */
 async function editMedium(mediaElement) {
     const template = document.querySelector("#newMediumTemplate").content.cloneNode(true);
-    template.querySelector("button[type='submit']").innerHTML = "Aktualisieren";
+    template.querySelector("button[type='submit']").innerHTML = "Speichern";
     template.querySelector("#newObjectTitle").value = mediaElement.title;
     template.querySelector("#newObjectAuthor").value = mediaElement.author;
     if (mediaElement.fsk) template.querySelector("#newObjectFsk").value = mediaElement.fsk;
@@ -159,7 +227,7 @@ async function editMedium(mediaElement) {
     })
 
     template.querySelector(".new-object-popup").addEventListener("click", (e) => {
-        if(e.target.classList.contains("new-object-popup")) {
+        if (e.target.classList.contains("new-object-popup")) {
             document.body.removeChild(document.querySelector(".new-object-popup"));
         }
     })
@@ -171,61 +239,87 @@ async function editMedium(mediaElement) {
     document.body.appendChild(template);
 }
 
+/**
+ * Diese Funktion gibt ein bearbeitetes Medium an das Backend weiter
+ * @param data -> Informationen des bearbeitenden Mediums
+ * @param mediaElement -> Altes Medium
+ * @returns {Promise<void>} -> neues Medium-Objekt
+ */
 async function updateMedia(data, mediaElement) {
     try {
         data.id = mediaElement.id;
-        const response = await (await fetch("http://localhost:8080/api/media", {
+        const response = await fetch("http://localhost:8080/api/media", {
             method: "PUT",
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify(data)
-        })).json();
+        });
+        if (!response.ok) {
+           throw new Error(response.message);
+        }
+        let responseData = await response.json();
         let idx = media.indexOf(mediaElement);
-        media.splice(idx, 1, response);
+        media.splice(idx, 1, responseData);
+        openAlert("Erfolgreich geändert", "success", 2500);
         displayMedia(media);
     } catch (error) {
         openAlert(error.message || "Es ist etwas schiefgelaufen", "danger", 2000);
     }
 }
 
+/**
+ * Diese Funktion gibt ein neues Medium an das Backend weiter
+ * @returns {Promise<any>} -> Neues Medium-Objekt
+ */
 async function submitNewMedium() {
     let data = returnMediaArray();
     try {
-        const response = (await fetch("http://localhost:8080/api/media/create", {
+        const response = await fetch("http://localhost:8080/api/media/create", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify(data)
-        })).json();
-        return response;
+        });
+        if(!response.ok){
+            throw new Error(response.message);
+        }
+        return await response.json();
     } catch (error) {
         openAlert(error.message || "Es ist etwas schiefgelaufen", "danger", 3000);
     }
 }
 
+/**
+ * Diese Funktion gibt die Werte des Erstellungs-/Bearbeitungsformulars zurück
+ * @returns {{author: *, title: *}} -> Array aller gültigen Werte
+ */
 function returnMediaArray() {
     const form = document;
     let data = {
-        title: form.querySelector("#newObjectTitle").value,
-        author: form.querySelector("#newObjectAuthor").value
+        title: DOMPurify.sanitize(form.querySelector("#newObjectTitle").value),
+        author: DOMPurify.sanitize(form.querySelector("#newObjectAuthor").value)
     };
-    let genre = form.querySelector("#newObjectGenre").value;
+    let genre = DOMPurify.sanitize(form.querySelector("#newObjectGenre").value);
     if (genre) data.genre = genre;
 
-    let fsk = form.querySelector("#newObjectFsk").value;
+    let fsk = DOMPurify.sanitize(form.querySelector("#newObjectFsk").value);
     if (fsk) data.fsk = fsk;
 
-    let code = form.querySelector("#newObjectCode").value;
+    let code = DOMPurify.sanitize(form.querySelector("#newObjectCode").value);
     if (code) data.code = code;
 
-    let isbn = form.querySelector("#newObjectIsbn").value;
+    let isbn = DOMPurify.sanitize(form.querySelector("#newObjectIsbn").value);
     if (isbn) data.isbn = isbn;
 
     return data;
 }
 
+/**
+ * Mit dieser Funktion kann man nach einem Medium suchen
+ */
 async function searchForMedia() {
     let value = document.getElementById("searchInput").value;
+    value = DOMPurify.sanitize(value);
     if (value.replace(/\s+/g, "") === "") {
         displayMedia(media);
         return;
@@ -235,7 +329,12 @@ async function searchForMedia() {
         try {
             const response = await fetch("http://localhost:8080/api/media/id/" + value);
             let data = [];
-            if (response.ok) data.push(await response.json());
+            console.log(response);
+            if (!response.ok){
+                displayMedia(null);
+                return;
+            }
+            data.push(await response.json());
             displayMedia(data);
         } catch (error) {
             this.openAlert(error.message || "Es ist etwas schiefgelaufen", "warning", "3000");
@@ -250,6 +349,9 @@ async function searchForMedia() {
     }
 }
 
+/**
+ * Diese Funktion zeigt die Skeleton-Karten an
+ */
 function showLoadingCards() {
     cardGrid.innerHTML = "";
 
@@ -259,8 +361,14 @@ function showLoadingCards() {
     }
 }
 
+/**
+ * Mit dieser Funktion lässt sich ein Alert/Banner öffnen, um dem User etwas mitzuteilen
+ * @param message -> Anzuzeigender Text
+ * @param status -> Art der Information (Danger, Warning, Success, Info)
+ * @param duration -> Zeit, wie lange der Alert sichtbar sein sollte
+ */
 function openAlert(message, status, duration) {
-    if(timeout){
+    if (timeout) {
         clearTimeout(timeout)
     }
     let alertWrapper = document.querySelector(".alert-wrapper");
@@ -293,6 +401,9 @@ function openAlert(message, status, duration) {
     }, duration);
 }
 
+/**
+ * Mit dieser Funktion wird der Alert wieder geschlossen
+ */
 function closeAlert() {
     const alertWrapper = document.querySelector(".alert-wrapper");
     const alertItem = alertWrapper.querySelector(".alert-content-wrapper");
