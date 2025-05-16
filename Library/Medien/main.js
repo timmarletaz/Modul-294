@@ -48,6 +48,7 @@ function displayMedia(mediaArray) {
     document.getElementById("cardGrid").style.userSelect = "auto";
     cardGrid.innerHTML = "";
     if (mediaArray) {
+        console.log(mediaArray);
         mediaArray.slice().reverse().forEach(mediaElement => {
             const template = document.getElementById("mediaCardTemplate").content.cloneNode(true);
             if (mediaElement.genre) template.querySelector("#genre").textContent = mediaElement.genre;
@@ -56,6 +57,9 @@ function displayMedia(mediaArray) {
             if (mediaElement.fsk) template.querySelector(".fsk").textContent = "(FSK " + mediaElement.fsk + ")";
             template.querySelector("#autor").textContent = mediaElement.author;
             if (mediaElement.isbn) template.querySelector("#isbn").textContent = mediaElement.isbn;
+            if(mediaElement.borrowed){
+                template.querySelector(".availability").style.backgroundColor = "var(--bs-danger)";
+            }
             template.querySelector(".edit-button").addEventListener("click", () => {
                 editMedium(mediaElement)
             });
@@ -84,14 +88,14 @@ function displayMedia(mediaArray) {
 
 /**
  * Diese Funktion öffnet ein Popup, um ein Medium ausleihen zu können
- * @param media -> das Medium, welches ausgeliehen wird
+ * @param mediaElement -> das Medium, welches ausgeliehen wird
  */
-function openBorrowWindow(media) {
+function openBorrowWindow(mediaElement) {
     const template = document.getElementById("borrowWindowTemplate").content.cloneNode(true);
-    template.querySelector(".genre").textContent = media.genre || "";
-    template.querySelector(".fsk").textContent = media.fsk || "";
-    template.querySelector(".title-author").innerHTML = `${media.title}<br>${media.author}`;
-    template.querySelector(".isbn").textContent = media.isbn;
+    template.querySelector(".genre").textContent = mediaElement.genre || "";
+    template.querySelector(".fsk").textContent = mediaElement.fsk || "";
+    template.querySelector(".title-author").innerHTML = `${mediaElement.title}<br>${mediaElement.author}`;
+    template.querySelector(".isbn").textContent = mediaElement.isbn;
     template.querySelector("button[type='button']").addEventListener("click", () => {
         document.body.removeChild(document.querySelector("#borrowPopup"));
     })
@@ -100,12 +104,16 @@ function openBorrowWindow(media) {
             openAlert("Kein Kunde ausgewählt", "warning", 3000);
         } else {
             try {
-                const response = await submitNewBorrowing(borrowingCustomer.id, media.id);
+                const response = await submitNewBorrowing(borrowingCustomer.id, mediaElement.id);
                 console.log(response.status);
                 if (response.status !== 200) {
                     console.log(response);
                     throw new Error(response.message);
                 }
+                let copy = {...mediaElement};
+                copy.borrowed = true;
+                media.splice(media.indexOf(mediaElement), 1, copy);
+                displayMedia(media);
                 openAlert("Ausleihe getätigt", "success", 2500);
             } catch (error) {
                 openAlert(error.message || "Medium ist bereits ausgeliehen", "info", 2500);

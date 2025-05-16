@@ -116,8 +116,8 @@
             <h3 class="title text-center mb-4">Neues Medium</h3>
             <form class="d-flex flex-column gap-3 flex-1 px-4 py-2" id="new-object-form">
                 <input class="form-control" placeholder="Titel *" name="Titel" id="newObjectTitle" pattern="^[\da-zA-Z.,\s]{1,30}$" required>
-                <input class="form-control" placeholder="Autor *" name="Autor" id="newObjectAuthor" pattern="^[a-zA-Zèéäöüç\.\,]+( [a-zA-Zèéäöüç]+)*$" required>
-                <input class="form-control" placeholder="Genre" name="Genre" id="newObjectGenre" pattern="^[a-zA-Zäöüèéà]+( [a-zA-Zäöüèéà]+)*$">
+                <input class="form-control" placeholder="Autor *" name="Autor" id="newObjectAuthor" pattern="^[a-zA-Zäöü\.\,]+( [a-zA-Zäöü]+)*$" required>
+                <input class="form-control" placeholder="Genre" name="Genre" id="newObjectGenre" pattern="^[a-zA-Zäöü]+( [a-zA-Zäöü]+)*$">
                 <input class="form-control" placeholder="Fsk" name="Fsk" type="number" min="0" max="99"
                        id="newObjectFsk">
                 <input class="form-control" placeholder="Code" name="Code" id="newObjectCode" pattern="^[a-zA-Z\d]+$">
@@ -146,7 +146,7 @@
             </div>
             <h4 class="text-center m-0 mt-4 fw-bolder">Ausleihende Person</h4>
 
-            <input class="form-control mt-3" placeholder="Suchen" onchange="searchForCustomer()" id="borrowingCustomerSearch" pattern="^\d+|[a-zA-Zäöüèéàç]+( [a-zA-Zäöüèçéà])*$">
+            <input class="form-control mt-3" placeholder="Suchen" onchange="searchForCustomer()" id="borrowingCustomerSearch" pattern="^\d+|[a-zA-Zäöü]+( [a-zA-Zäöü])*$">
 
             <div class="overflow-y-auto w-100 d-flex flex-column align-items-center row-gap-2 mt-3 customer-card-wrapper">
                 <template id="borrowCustomerCard">
