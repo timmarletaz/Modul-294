@@ -76,7 +76,6 @@ function openExtensionWindow(mediaId, returnDate) {
     const template = document.querySelector("#extendTemplate").content.cloneNode(true);
 
     let borrowingEnd = new Date(returnDate);
-    console.log(borrowingEnd);
 
     const formatDate = date =>
         date.toISOString().split("T")[0];
@@ -89,7 +88,6 @@ function openExtensionWindow(mediaId, returnDate) {
             let newDate = new Date(input.value);
             let diffTime = newDate - new Date();
             let days = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-            console.log(days);
             const response = await submitBorrowExtension(days, mediaId);
             if(response) {
                 let idx = borrowings.findIndex(borrowing => borrowing.media.id === mediaId);

@@ -48,7 +48,6 @@ function displayMedia(mediaArray) {
     document.getElementById("cardGrid").style.userSelect = "auto";
     cardGrid.innerHTML = "";
     if (mediaArray) {
-        console.log(mediaArray);
         mediaArray.slice().reverse().forEach(mediaElement => {
             const template = document.getElementById("mediaCardTemplate").content.cloneNode(true);
             if (mediaElement.genre) template.querySelector("#genre").textContent = mediaElement.genre;
@@ -105,9 +104,7 @@ function openBorrowWindow(mediaElement) {
         } else {
             try {
                 const response = await submitNewBorrowing(borrowingCustomer.id, mediaElement.id);
-                console.log(response.status);
                 if (response.status !== 200) {
-                    console.log(response);
                     throw new Error(response.message);
                 }
                 let copy = {...mediaElement};
@@ -337,7 +334,6 @@ async function searchForMedia() {
         try {
             const response = await fetch("http://localhost:8080/api/media/id/" + value);
             let data = [];
-            console.log(response);
             if (!response.ok){
                 displayMedia(null);
                 return;

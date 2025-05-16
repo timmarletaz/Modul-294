@@ -17,7 +17,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 async function displayAddresses(addressArray) {
     cardGrid.innerHTML = "";
     if (addressArray) {
-        console.log(addressArray);
         for (const address of addressArray.slice().reverse()) {
             const template = document.querySelector("#addressCardTemplate").content.cloneNode(true);
             template.querySelector(".id").textContent = address.id;
